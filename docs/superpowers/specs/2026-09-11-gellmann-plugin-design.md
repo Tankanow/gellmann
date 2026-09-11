@@ -116,8 +116,8 @@ bullets `- work: "..."` / `- solo: "..."` keep only the active mode's row.
 | Skill | Trigger | What it does |
 |---|---|---|
 | `gellmann` | `/gellmann [work\|solo\|off]` | The lens itself, at the given mode. No argument reports the current mode. |
-| `gellmann-work` | `/gellmann-work [topic]` | Persona 1. Locate the owners and the internal record for the domain the output touches. Sources, in order: `CODEOWNERS` and `git blame`/`git log` on the touched files; ADRs, `docs/`, READMEs, design docs in the repo; sibling repos; internal wikis, Slack, Confluence, Jira, and meeting notes when the host exposes tools for them. Ends with a named list: who to ask, what exactly to ask, and what internal artifact already answers it. Never DMs or posts on the user's behalf; it drafts the question. |
-| `gellmann-solo` | `/gellmann-solo [topic]` | Persona 2. Locate canonical primary sources for the domain: the spec or RFC, the official reference docs for the exact version in use, the upstream source code, the paper, the standard, the vendor's own API reference. Secondary sources only when they are published critiques of a named primary. Every claim gets a citation the user can open, or a "could not verify" flag. Checks that every cited source actually exists before citing it. |
+| `gellmann-work` | `/gellmann-work [topic]` | Persona 1. Also switches the session mode to `work`. Locate the owners and the internal record for the domain the output touches. Sources, in order: `CODEOWNERS` and `git blame`/`git log` on the touched files; ADRs, `docs/`, READMEs, design docs in the repo; sibling repos; internal wikis, Slack, Confluence, Jira, and meeting notes when the host exposes tools for them. Ends with a named list: who to ask, what exactly to ask, and what internal artifact already answers it. Never DMs or posts on the user's behalf; it drafts the question. |
+| `gellmann-solo` | `/gellmann-solo [topic]` | Persona 2. Also switches the session mode to `solo`. Locate canonical primary sources for the domain: the spec or RFC, the official reference docs for the exact version in use, the upstream source code, the paper, the standard, the vendor's own API reference. Secondary sources only when they are published critiques of a named primary. Every claim gets a citation the user can open, or a "could not verify" flag. Checks that every cited source actually exists before citing it. |
 | `gellmann-review` | `/gellmann-review [target]` | One-shot review of a given output (the last response, a diff, a file, a pasted document) through King's checklist. One line per finding. Does not fix; lists. |
 | `gellmann-help` | `/gellmann-help` | Quick-reference card. Changes nothing. |
 
@@ -140,8 +140,8 @@ Tags (King's nine criteria compressed to seven):
 End with the verdict: `N claims need a source or a human.` or, when nothing is
 flagged, `An expert would sign off.`
 
-The skill body carries King's eight critical-reviewer prompts verbatim as the
-interrogation set, with attribution.
+The skill body carries King's nine critical-reviewer prompts, lightly
+compressed, as the interrogation set, with attribution.
 
 ### 3.4 Commands
 
