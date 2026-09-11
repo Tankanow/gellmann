@@ -397,8 +397,10 @@ const { execFileSync } = require('child_process');
 const { detectMode, hasCodeowners, authorCount } = require('../hooks/gellmann-detect');
 const { getDefaultMode } = require('../hooks/gellmann-config');
 
+// GIT_CONFIG_GLOBAL/SYSTEM → devNull: the developer's commit.gpgsign or hooks
+// template must not reach these throwaway repos.
 function git(cwd, args, env = {}) {
-  return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], env: { ...process.env, ...env } });
+  return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], env: { ...process.env, GIT_CONFIG_GLOBAL: os.devNull, GIT_CONFIG_SYSTEM: os.devNull, ...env } });
 }
 
 function repo(commitsBy) {
@@ -561,7 +563,7 @@ git commit -m "feat: auto-detect work vs solo from CODEOWNERS and author count"
   const { execFileSync } = require('child_process');
   const repoDir = path.join(temp, 'team-repo');
   fs.mkdirSync(repoDir, { recursive: true });
-  const g = (args, env = {}) => execFileSync('git', args, { cwd: repoDir, stdio: 'ignore', env: { ...process.env, ...env } });
+  const g = (args, env = {}) => execFileSync('git', args, { cwd: repoDir, stdio: 'ignore', env: { ...process.env, GIT_CONFIG_GLOBAL: os.devNull, GIT_CONFIG_SYSTEM: os.devNull, ...env } });
   g(['init', '-q']);
   for (const [n, e] of [['A', 'a@x.io'], ['B', 'b@x.io']]) {
     fs.writeFileSync(path.join(repoDir, n + '.txt'), n);
