@@ -1,8 +1,8 @@
 // gellmann — OpenCode plugin.
 //
 // Injects the gellmann ruleset into every chat's system prompt at the active
-// intensity, persists /gellmann mode switches, and registers slash commands so
-// they work when the package is installed from npm. Reuses the shared
+// mode, persists /gellmann mode switches, and registers slash commands so
+// they work when the plugin is loaded from a checkout. Reuses the shared
 // instruction builder so Claude Code, Codex, pi, and OpenCode all read one
 // source of truth.
 //

@@ -20,7 +20,7 @@ Tags:
 - `fact:` a factual claim that is wrong, speculative, overstated, or unsourced. Name the primary source or the person.
 - `source:` a citation that is missing, secondary, or does not exist. Name what a real one would be.
 - `logic:` non-sequitur, reversed causality ("wet streets cause rain"), false dichotomy, unjustified leap, generalization from one case.
-- `onesided:` a stakeholder, discipline, or counterargument that is missing.
+- `onesided:` a stakeholder, discipline, or counterargument that is missing, or a loaded, one-sided framing of one. Suggest neutral wording.
 - `contested:` reasonable experts would dispute this; say whether the dispute is empirical or values-based.
 - `hidden:` an assumption, value judgment, or limitation that is implicit and load-bearing.
 - `vague:` too abstract to act on. Say what specific form would be actionable.
@@ -31,7 +31,7 @@ Tags:
 
 ✅ `¶3: fact: "Python dicts are unordered". True before 3.7; insertion order is guaranteed since 3.7 (docs, Mapping Types — dict, "Changed in version 3.7").`
 
-✅ `L41: source: cites "the OWASP guide" for "12 rounds of bcrypt". The OWASP Password Storage Cheat Sheet gives a work factor of 10 or more; "rounds" misreads the cost parameter. Quote the sheet.`
+✅ `L41: source: cites "the OWASP guide" for "12 rounds of bcrypt". Name the document: the OWASP Password Storage Cheat Sheet sets a minimum work factor of 10, so quote it rather than gesturing at "the guide".`
 
 ✅ `¶7: logic: "teams that adopted the tool shipped faster, so the tool speeds teams up". Selection: fast teams adopt tools. Needs the pre-adoption baseline.`
 

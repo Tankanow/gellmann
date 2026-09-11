@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 
 const root = path.join(__dirname, '..');
 
@@ -56,6 +57,34 @@ const INVARIANTS = [
 const skill = read('skills/gellmann/SKILL.md');
 const initPy = read('__init__.py');
 const sources = [['skills/gellmann/SKILL.md', skill], ['AGENTS.md', agents], ['__init__.py', initPy]];
+
+// The fallback strings are what ships when SKILL.md can't be read (e.g. a
+// broken checkout) — they must carry the same invariants, not just the
+// primary sources above.
+const nodeFallback = require('../hooks/gellmann-instructions').getFallbackInstructions('solo');
+sources.push(['hooks/gellmann-instructions.js (Node fallback)', nodeFallback]);
+
+let pythonFallback = null;
+for (const cmd of ['python3', 'python']) {
+  try {
+    pythonFallback = execFileSync(cmd, ['-c', [
+      "import importlib.util",
+      "spec = importlib.util.spec_from_file_location('gellmann_init', '__init__.py')",
+      "mod = importlib.util.module_from_spec(spec)",
+      "spec.loader.exec_module(mod)",
+      "print(mod._fallback_instructions('solo'))",
+    ].join('\n')], { cwd: root, encoding: 'utf8' });
+    break;
+  } catch {
+    // try the next candidate; if neither is available, skip the Python source below
+  }
+}
+if (pythonFallback) {
+  sources.push(['__init__.py _fallback_instructions (Python fallback)', pythonFallback]);
+} else {
+  console.error('warning: no working python3/python found — skipping the Python fallback invariant check');
+}
+
 for (const phrase of INVARIANTS) {
   for (const [label, text] of sources) {
     if (!text.includes(phrase)) {
@@ -70,4 +99,4 @@ if (failed) {
   process.exit(1);
 }
 
-console.log(`Rule copies match AGENTS.md; ${INVARIANTS.length} rule invariants present in SKILL.md, AGENTS.md, and __init__.py.`);
+console.log(`Rule copies match AGENTS.md; ${INVARIANTS.length} rule invariants present in ${sources.map(([label]) => label).join(', ')}.`);

@@ -25,12 +25,15 @@ const claudeDir = path.join(home, '.claude');
 fs.mkdirSync(claudeDir, { recursive: true });
 
 const flagPath = path.join(claudeDir, '.gellmann-active');
-fs.writeFileSync(flagPath, 'full');
+fs.writeFileSync(flagPath, 'solo');
 
 const configDir = path.join(temp, 'config-home', 'gellmann');
 fs.mkdirSync(configDir, { recursive: true });
 const configPath = path.join(configDir, 'config.json');
-fs.writeFileSync(configPath, JSON.stringify({ defaultMode: 'ultra' }));
+fs.writeFileSync(configPath, JSON.stringify({ defaultMode: 'work' }));
+
+const nudgeFlagPath = path.join(claudeDir, '.gellmann-statusline-nudged');
+fs.writeFileSync(nudgeFlagPath, '');
 
 const settingsPath = path.join(claudeDir, 'settings.json');
 fs.writeFileSync(settingsPath, JSON.stringify({
@@ -47,6 +50,7 @@ let result = runUninstall(env);
 assert.equal(result.status, 0, result.stderr);
 assert.equal(fs.existsSync(flagPath), false, 'mode flag must be removed');
 assert.equal(fs.existsSync(configPath), false, 'config file must be removed');
+assert.equal(fs.existsSync(nudgeFlagPath), false, 'statusline nudge flag must be removed');
 
 const settingsAfter = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
 assert.equal(

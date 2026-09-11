@@ -31,6 +31,7 @@ to load in a given agent.
 | Kiro | `.kiro/steering/gellmann.md` | Steering rule; copy globally or into a project. |
 | Qoder | `.qoder/rules/gellmann.md`, `.qoder-plugin/plugin.json`, `hooks/qoder-hooks.json`, `skills/`, `AGENTS.md` | Qoder auto-loads `AGENTS.md` as always-on context; `.qoder/rules/gellmann.md` provides per-project rules; the plugin manifest points at `skills/` for the five gellmann skills (invoked as `/gellmann`, `/gellmann-review`, etc. via the Skill system). Full plugin-tier: `hooks/qoder-hooks.json` template registers `UserPromptSubmit` (mode activation + ruleset injection) and `PreToolUse` with `task|Task` matcher (subagent injection). Instruction-tier works from repo root with zero setup via `AGENTS.md`. |
 | Zed | `AGENTS.md` | Auto-includes `AGENTS.md` from the worktree root as one of its default rule files for the Agent Panel. Instruction-tier. |
+| MCP hosts | `gellmann-mcp/` | Stdio MCP server exposing the ruleset as a prompt (`gellmann`) and a read-only tool (`gellmann_instructions`); see gellmann-mcp/README.md. |
 | Generic agents | `AGENTS.md` or `skills/*/SKILL.md` | Copy the compact rule file or load the skill files directly. |
 
 ## Adapter Rule
@@ -50,4 +51,4 @@ instructions, keep its copied rule text aligned with `AGENTS.md`.
 
 ## Note
 
-Gellmann is a structural port of [ponytail](https://github.com/dietrichgebert/ponytail); most of the host install paths above (plugin manifests, rule-file locations, hook wiring) were carried over from ponytail's adapters rather than independently designed for this project.
+Gellmann is a structural port of [ponytail](https://github.com/dietrichgebert/ponytail); most of the host install paths above (plugin manifests, rule-file locations, hook wiring) were carried over from ponytail's adapters rather than independently designed for this project. Comments in ported code that cite `#NNN` issue numbers refer to ponytail's issue tracker, not this repository's.

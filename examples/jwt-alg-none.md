@@ -12,7 +12,7 @@ wrong. "By default" is the claim that needs a source.
 
 ```
 "the library rejects alg: none by default"
-  Source: RFC 8725 §3.1 — libraries MUST let the caller specify the allowed algorithms and MUST NOT use any other; pin the set rather than rely on a default
+  Source: RFC 8725 §3.1 — "Libraries MUST enable the caller to specify a supported set of algorithms and MUST NOT use any other algorithms when performing cryptographic operations."
   Source: <library> changelog for the pinned version — unopened; the claim is settled only by the release notes or a test in the library's suite
   Status: could not verify as stated; verify the pinned version, and pin the algorithm list regardless
 ```

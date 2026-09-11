@@ -50,7 +50,7 @@ export function parseGellmannCommand(text, defaultMode = DEFAULT_MODE) {
   if (primary === "status") return { type: "status" };
 
   if (primary === "default") {
-    // gellmann: a default must be a runtime level; review is session-only (#377).
+    // gellmann: a default must be a runtime mode; review is session-only (#377).
     const mode = normalizeMode(secondary);
     return mode ? { type: "set-default", mode } : { type: "invalid", reason: "invalid-default-mode" };
   }

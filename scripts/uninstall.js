@@ -22,6 +22,7 @@ function removeIfExists(filePath, label) {
 
 removeIfExists(path.join(getClaudeDir(), '.gellmann-active'), 'mode flag');
 removeIfExists(getConfigPath(), 'config file');
+removeIfExists(path.join(getClaudeDir(), '.gellmann-statusline-nudged'), 'statusline nudge flag');
 
 const settingsPath = path.join(getClaudeDir(), 'settings.json');
 try {

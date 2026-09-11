@@ -15,7 +15,7 @@ const commands = ['gellmann', 'gellmann-work', 'gellmann-solo', 'gellmann-review
 const root = path.join(__dirname, '..');
 
 // gellmann: probe once; on Windows `python3` is the Store-alias stub that fails
-// even when Python is installed, so fall back to `python` (mirrors benchmarks/correctness.js).
+// even when Python is installed, so fall back to `python`.
 let pythonCmd;
 function pythonExe() {
   if (pythonCmd) return pythonCmd;
@@ -160,6 +160,19 @@ print(json.dumps({
   assert.match(data.status_before, /Gellmann mode: work/);
   assert.match(data.invalid, /Usage:/);
   assert.match(data.status_after, /Gellmann mode: work/);
+
+  // review is session-only (spec §3.2) and must never be a default: _default_mode
+  // normalizes env/config with _normalize_runtime_mode, which rejects "review".
+  const emptyConfigDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gellmann-config-empty-'));
+  const reviewDefaultOutput = python(String.raw`
+import importlib.util, json
+spec = importlib.util.spec_from_file_location('gellmann_hermes_plugin', '__init__.py')
+mod = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(mod)
+print(json.dumps({'default': mod.build_injected_context(None)}))
+`, { XDG_CONFIG_HOME: emptyConfigDir, GELLMANN_DEFAULT_MODE: 'review' });
+  const reviewDefaultData = JSON.parse(reviewDefaultOutput);
+  assert.doesNotMatch(reviewDefaultData.default, /mode: review/);
 });
 
 test('Hermes plugin review mode injects the real review skill body', () => {

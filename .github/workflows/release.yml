@@ -15,6 +15,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install MCP deps
+        run: npm install --prefix gellmann-mcp
+      - name: Run tests
+        run: npm test
       # The tag must equal the version every manifest declares.
       - run: node scripts/check-versions.js
       - run: gh release create "$GITHUB_REF_NAME" --generate-notes --verify-tag

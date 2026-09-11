@@ -38,6 +38,7 @@ delete process.env.COPILOT_PLUGIN_DATA;
 // A leaked subagent matcher would scope the inject-into-every-subagent assertions.
 delete process.env.GELLMANN_SUBAGENT_MATCHER;
 delete process.env.QODER_SESSION_ID;
+delete process.env.GELLMANN_DEFAULT_MODE;
 
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'gellmann-hooks-'));
 // Runs on normal exit and on assertion-throw exit; force makes it idempotent.

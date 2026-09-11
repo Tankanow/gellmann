@@ -12,7 +12,7 @@ into reads.
 
 ```
 "clients will retry the POST at the new URL after a 301"
-  Source: RFC 9110 §15.4.2 — "a user agent MAY change the request method from POST to GET for the subsequent request"; §15.4.9 (308) — "the user agent MUST NOT change the request method"
+  Source: RFC 9110 §15.4.2 — "a user agent MAY change the request method from POST to GET for the subsequent request"; §15.4.9 (308) — "the user agent MUST NOT change the request method […]"
   Status: refuted; use 308
 ```
 

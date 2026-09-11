@@ -58,7 +58,7 @@ Auto-detected at session start: `work` if the repo has a `CODEOWNERS` file or tw
 
 ## Install
 
-Hermes, Grok Build, Devin, Qoder, Swival, and Antigravity install paths are carried over from ponytail's adapters and have not yet been exercised against those hosts by this project; the Claude Code, Codex, Copilot CLI, Gemini CLI, OpenCode, and pi paths are covered by the test suite.
+Hermes, Grok Build, Devin, Qoder, Swival, and Antigravity install paths are carried over from ponytail's adapters and have not yet been exercised against those hosts by this project; the Claude Code, Codex, OpenCode, and pi adapters run their real code in tests; the Copilot CLI and Gemini CLI manifests are asserted but their hosts were not exercised.
 
 The Claude Code and Codex plugins run two tiny Node.js lifecycle hooks, so `node` needs to be on your PATH (note for Nix/nvm users: it must be on the non-interactive shell's PATH). If it isn't, the skills still work, the always-on activation just stays quiet instead of erroring on every prompt.
 
@@ -141,13 +141,13 @@ For full plugin-tier support (automatic mode activation + ruleset injection on e
 
 ### Antigravity CLI
 
-Google is renaming Gemini CLI to Antigravity CLI (the `agy` binary); the same extension installs there:
+Google has announced Antigravity CLI (the `agy` binary) as the successor to Gemini CLI; both `gemini extensions install` and `agy plugin install` are reported to work with this extension manifest. Neither path has been exercised by this project.
 
 ```bash
 agy plugin install https://github.com/tankanow/gellmann
 ```
 
-It reuses this repo's `gemini-extension.json`. One difference: Antigravity converts the `/gellmann` commands into skills, so you type them into the chat (e.g. `/gellmann-review` as a message) instead of picking them from a slash menu. Until the migration completes (around June 18, 2026), `gemini extensions install` still works too. To run it as an always-on rule instead, drop the ruleset into `.agents/rules/`.
+It reuses this repo's `gemini-extension.json`. One difference: Antigravity converts the `/gellmann` commands into skills, so you type them into the chat (e.g. `/gellmann-review` as a message) instead of picking them from a slash menu. To run it as an always-on rule instead, drop the ruleset into `.agents/rules/`.
 
 ### Hermes Agent
 
@@ -225,6 +225,10 @@ Amp (Sourcegraph) reads `AGENTS.md` from the working directory and parent direct
 Jules (Google) reads `AGENTS.md` from the repository root, which this repo ships, so it picks up the ruleset with no setup.
 
 Which files map to which agent: [Agent portability](docs/agent-portability.md).
+
+### MCP hosts
+
+Any MCP-capable host can run gellmann as a stdio server instead of a plugin: see [`gellmann-mcp/README.md`](gellmann-mcp/README.md) for setup, the `gellmann` prompt, and the read-only `gellmann_instructions` tool.
 
 ### Uninstall
 

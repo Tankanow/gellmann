@@ -17,6 +17,7 @@ files, or persist anything.
 |------|---------|-----------------------|
 | **work** | `/gellmann work` | With the team: CODEOWNERS, git blame, ADRs, wikis, Slack, Confluence, tickets. Ends with who to ask. |
 | **solo** | `/gellmann solo` | In canonical primary sources: spec, RFC, official docs for the exact version, upstream source, paper. |
+| **review** | `/gellmann-review` | Session-only. The lens is replaced by a pointer to the review skill until you run `/gellmann work` or `/gellmann solo`. |
 
 Auto-detected at session start: work if the repo has a CODEOWNERS file or two or more commit authors, else solo. Mode sticks until changed or session end.
 
@@ -34,7 +35,7 @@ Codex uses `@gellmann`, `@gellmann-review`, and so on; Claude Code, OpenCode, an
 
 ## Deactivate
 
-Say "stop gellmann" or run `/gellmann off`. Resume with `/gellmann`. "normal mode" is deliberately not a switch: it belongs to ponytail and caveman.
+Say "stop gellmann" or run `/gellmann off`. Resume with `/gellmann`. "normal mode" is deliberately not a switch: it belongs to ponytail and caveman. After `/gellmann-review`, `/gellmann work` or `/gellmann solo` restores the lens.
 
 ## Configure the default
 
