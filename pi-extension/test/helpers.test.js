@@ -43,7 +43,7 @@ test("resolveSessionMode prefers latest persisted session mode", () => {
 
 test("resolveSessionMode returns fallback when entries is not an array", () => {
   assert.equal(resolveSessionMode(null, "work"), "work");
-  assert.equal(resolveSessionMode(undefined, "solo"), "solo");
+  assert.equal(resolveSessionMode(undefined, "work"), "work");
   assert.equal(resolveSessionMode({}, "work"), "work");
   assert.equal(resolveSessionMode("not an array"), "solo"); // DEFAULT_MODE fallback
 });
