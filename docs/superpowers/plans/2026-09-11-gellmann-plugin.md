@@ -261,7 +261,7 @@ test('filter keeps only the active mode row and example', () => {
 });
 
 test('filter keeps ordinary rule bullets that start with a mode-like word', () => {
-  const body = '---\nname: x\n---\n- Work: this is a rule, not an example\n- solo: "an example"\n';
+  const body = '---\nname: x\n---\n- Work: this is a rule, keep it verbatim\n- solo: "an example"\n';
   const out = filterSkillBodyForMode(body, 'work');
   assert.match(out, /Work: this is a rule/);
   assert.doesNotMatch(out, /an example/);
