@@ -1,0 +1,17 @@
+{
+  "name": "gellmann",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The expert reader for AI agents. Counters the Gell-Mann Amnesia effect: reads every output as a domain expert would, then verifies with the team (work) or with primary sources (solo).",
+  "keywords": ["opencode-plugin", "opencode", "gellmann", "pi-package", "pi", "skills", "qoder", "verification", "gell-mann-amnesia"],
+  "license": "MIT",
+  "author": { "name": "Adam Tankanow", "url": "https://github.com/tankanow" },
+  "homepage": "https://github.com/tankanow/gellmann",
+  "repository": { "type": "git", "url": "git+https://github.com/tankanow/gellmann.git" },
+  "bugs": { "url": "https://github.com/tankanow/gellmann/issues" },
+  "main": "./.opencode/plugins/gellmann.mjs",
+  "exports": { ".": "./.opencode/plugins/gellmann.mjs", "./plugin": "./.opencode/plugins/gellmann.mjs" },
+  "files": ["AGENTS.md", "hooks/", "skills/", ".opencode/", ".qoder/", ".qoder-plugin/", "pi-extension/", "scripts/uninstall.js", "assets/", "LICENSE"],
+  "scripts": { "test": "node --test tests/*.test.js && npm test --prefix pi-extension && npm test --prefix gellmann-mcp" },
+  "pi": { "extensions": ["./pi-extension/index.js"], "skills": ["./skills"] }
+}
