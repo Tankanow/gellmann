@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="120" viewBox="0 0 480 120" role="img" aria-label="Gellmann">
+  <rect width="480" height="120" rx="16" fill="#1f3a5f"/>
+  <text x="32" y="78" font-family="Georgia, 'Times New Roman', serif" font-size="56" fill="#f5f1e8">Gellmann</text>
+  <text x="300" y="78" font-family="Georgia, serif" font-size="56" fill="#f5f1e8" opacity="0.35">§</text>
+</svg>
