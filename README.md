@@ -250,7 +250,7 @@ These remove the plugin's own files. They leave behind a small amount of state g
 | `/gellmann [work \| solo \| off]` | Set the mode, or turn it off. No argument reports the current mode. `/gellmann default <mode>` persists it. |
 | `/gellmann-work [topic]` | Find the teammates and internal record that own this domain; draft the questions. Switches to work. |
 | `/gellmann-solo [topic]` | Find canonical primary sources; cite or say could-not-verify. Switches to solo. |
-| `/gellmann-review [target]` | Expert review of an output, one line per finding, ending in `N claims need a source or a human.` |
+| `/gellmann-review [target]` | Expert review of an output, one line per finding, ending in `N claims need a source or a human.` Switches the session to review mode; `/gellmann work\|solo` returns. |
 | `/gellmann-help` | Quick reference. |
 
 Commands need a skill-capable host. Instruction-only adapters (Cursor, Windsurf, Cline, Copilot Chat, Kiro, Antigravity) load the always-on ruleset without the commands.
