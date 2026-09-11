@@ -92,6 +92,21 @@ print(json.dumps({'skills': ctx.skills, 'hooks': ctx.hooks, 'commands': ctx.comm
   assert.ok(data.commands.includes('gellmann-review'));
 });
 
+test('Hermes _filter_skill_body_for_mode keeps ordinary rule bullets that start with a mode-like word', () => {
+  const output = python(String.raw`
+import importlib.util, json
+spec = importlib.util.spec_from_file_location('gellmann_hermes_plugin', '__init__.py')
+mod = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(mod)
+body = "---\nname: x\n---\n- Work: this is a rule, keep it verbatim\n- solo: \"an example\"\n"
+out = mod._filter_skill_body_for_mode(body, 'work')
+print(json.dumps({'out': out}))
+`);
+  const { out } = JSON.parse(output);
+  assert.match(out, /Work: this is a rule/);
+  assert.doesNotMatch(out, /an example/);
+});
+
 test('Hermes plugin builds mode-aware injected context from the canonical skill', () => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'gellmann-config-'));
   const output = python(String.raw`

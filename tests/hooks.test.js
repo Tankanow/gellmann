@@ -12,6 +12,7 @@ const root = path.join(__dirname, '..');
 // paths pass, paths carrying shell metacharacters are rejected so they never get
 // embedded in a shell command.
 const { DEFAULT_MODE, getDefaultMode, isShellSafe, writeDefaultMode } = require('../hooks/gellmann-config');
+const { repo } = require('./helpers/git-fixture');
 assert.equal(isShellSafe('C:\\Users\\x\\.claude\\plugins\\gellmann\\hooks\\gellmann-statusline.ps1'), true);
 assert.equal(isShellSafe('/home/u/.claude/plugins/gellmann/hooks/gellmann-statusline.sh'), true);
 assert.equal(isShellSafe('/tmp/a"&calc.exe&"/x.sh'), false);
@@ -123,16 +124,7 @@ assert.equal(
 // Auto-detect: with no env/config default, activate resolves work vs solo from
 // the cwd. Build a two-author temp repo and run the hook from inside it.
 {
-  const { execFileSync } = require('child_process');
-  const repoDir = path.join(temp, 'team-repo');
-  fs.mkdirSync(repoDir, { recursive: true });
-  const g = (args, env = {}) => execFileSync('git', args, { cwd: repoDir, stdio: 'ignore', env: { ...process.env, GIT_CONFIG_GLOBAL: os.devNull, GIT_CONFIG_SYSTEM: os.devNull, ...env } });
-  g(['init', '-q']);
-  for (const [n, e] of [['A', 'a@x.io'], ['B', 'b@x.io']]) {
-    fs.writeFileSync(path.join(repoDir, n + '.txt'), n);
-    g(['add', '.']);
-    g(['commit', '-qm', n], { GIT_AUTHOR_NAME: n, GIT_AUTHOR_EMAIL: e, GIT_COMMITTER_NAME: n, GIT_COMMITTER_EMAIL: e });
-  }
+  const repoDir = repo([['A', 'a@x.io'], ['B', 'b@x.io']]);
   const detectEnv = { HOME: home, USERPROFILE: home, XDG_CONFIG_HOME: path.join(temp, 'xdg-empty') };
   const r = spawnSync(process.execPath, [path.join(root, 'hooks', 'gellmann-activate.js')], { cwd: repoDir, env: { ...process.env, ...detectEnv }, encoding: 'utf8' });
   assert.equal(r.status, 0, r.stderr);

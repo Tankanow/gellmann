@@ -17,6 +17,7 @@ const os = require('os');
 const DEFAULT_MODE = 'solo';
 const VALID_MODES = ['off', 'work', 'solo', 'review'];
 const RUNTIME_MODES = ['off', 'work', 'solo'];
+const PERSONA_COMMANDS = { 'gellmann-work': 'work', 'gellmann-solo': 'solo' };
 
 function normalizeMode(mode) {
   if (typeof mode !== 'string') return null;
@@ -68,6 +69,12 @@ function getConfigPath() {
   return path.join(getConfigDir(), 'config.json');
 }
 
+// Strip a leading UTF-8 BOM (some shells/editors prepend one) and parse.
+// Throws on missing/invalid JSON, same as the inline reads it replaces.
+function readJsonFile(filePath) {
+  return JSON.parse(fs.readFileSync(filePath, 'utf8').replace(/^\uFEFF/, ''));
+}
+
 function getClaudeDir() {
   // gellmann: CLAUDE_CONFIG_DIR overrides ~/.claude, matching Claude Code.
   return process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
@@ -79,7 +86,7 @@ function getDefaultMode(cwd) {
     return envMode.toLowerCase();
   }
   try {
-    const config = JSON.parse(fs.readFileSync(getConfigPath(), 'utf8').replace(/^\uFEFF/, ''));
+    const config = readJsonFile(getConfigPath());
     if (config.defaultMode && RUNTIME_MODES.includes(config.defaultMode.toLowerCase())) {
       return config.defaultMode.toLowerCase();
     }
@@ -103,7 +110,7 @@ function getQuietStartup() {
     return v !== '' && v !== '0' && v !== 'false' && v !== 'no';
   }
   try {
-    const config = JSON.parse(fs.readFileSync(getConfigPath(), 'utf8').replace(/^\uFEFF/, ''));
+    const config = readJsonFile(getConfigPath());
     return config.quietStartup === true;
   } catch (_) {
     return false;
@@ -120,7 +127,7 @@ function getHideStatus() {
     return v !== '' && v !== '0' && v !== 'false' && v !== 'no';
   }
   try {
-    const config = JSON.parse(fs.readFileSync(getConfigPath(), 'utf8').replace(/^\uFEFF/, ''));
+    const config = readJsonFile(getConfigPath());
     return config.hideStatus === true;
   } catch (_) {
     return false;
@@ -136,7 +143,7 @@ function writeDefaultMode(mode) {
   fs.mkdirSync(path.dirname(configPath), { recursive: true });
   let config = {};
   try {
-    config = JSON.parse(fs.readFileSync(configPath, 'utf8').replace(/^\uFEFF/, ''));
+    config = readJsonFile(configPath);
     if (!config || typeof config !== 'object' || Array.isArray(config)) config = {};
   } catch (_) {}
   config.defaultMode = normalized;
@@ -148,6 +155,7 @@ module.exports = {
   DEFAULT_MODE,
   VALID_MODES,
   RUNTIME_MODES,
+  PERSONA_COMMANDS,
   getDefaultMode,
   getConfigDir,
   getConfigPath,

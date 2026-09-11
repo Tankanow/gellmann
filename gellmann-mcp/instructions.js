@@ -5,10 +5,10 @@ import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const { getGellmannInstructions } = require("../hooks/gellmann-instructions.js");
-const { getDefaultMode, normalizeMode } = require("../hooks/gellmann-config.js");
+const { RUNTIME_MODES, getDefaultMode, normalizeMode } = require("../hooks/gellmann-config.js");
 
 // The two modes the server offers. "off" has no instructions to serve.
-export const MODES = ["work", "solo"];
+export const MODES = RUNTIME_MODES.filter((m) => m !== "off");
 
 // Resolve a requested mode to a runtime mode. Unknown, empty, or "off"
 // falls back to the configured default, then to "solo".

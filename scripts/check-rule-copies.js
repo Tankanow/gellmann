@@ -54,7 +54,8 @@ const INVARIANTS = [
 ];
 
 const skill = read('skills/gellmann/SKILL.md');
-const sources = [['skills/gellmann/SKILL.md', skill], ['AGENTS.md', agents]];
+const initPy = read('__init__.py');
+const sources = [['skills/gellmann/SKILL.md', skill], ['AGENTS.md', agents], ['__init__.py', initPy]];
 for (const phrase of INVARIANTS) {
   for (const [label, text] of sources) {
     if (!text.includes(phrase)) {
@@ -69,4 +70,4 @@ if (failed) {
   process.exit(1);
 }
 
-console.log(`Rule copies match AGENTS.md; ${INVARIANTS.length} rule invariants present in SKILL.md and AGENTS.md.`);
+console.log(`Rule copies match AGENTS.md; ${INVARIANTS.length} rule invariants present in SKILL.md, AGENTS.md, and __init__.py.`);

@@ -4,6 +4,7 @@ const require = createRequire(import.meta.url);
 const {
   DEFAULT_MODE,
   RUNTIME_MODES,
+  PERSONA_COMMANDS,
   getDefaultMode,
   getQuietStartup,
   getHideStatus,
@@ -147,8 +148,13 @@ export default function gellmannExtension(pi) {
   });
 
   const persona = (mode, ctx, args) => { setMode(mode, ctx); sendAlias(`/skill:gellmann-${mode}`, args, ctx); };
-  pi.registerCommand("gellmann-work", { description: "Find owners and internal record; switch to work mode", handler: (args, ctx) => persona("work", ctx, args) });
-  pi.registerCommand("gellmann-solo", { description: "Find primary sources; switch to solo mode", handler: (args, ctx) => persona("solo", ctx, args) });
+  const PERSONA_DESCRIPTIONS = {
+    work: "Find owners and internal record; switch to work mode",
+    solo: "Find primary sources; switch to solo mode",
+  };
+  for (const [command, mode] of Object.entries(PERSONA_COMMANDS)) {
+    pi.registerCommand(command, { description: PERSONA_DESCRIPTIONS[mode], handler: (args, ctx) => persona(mode, ctx, args) });
+  }
   pi.registerCommand("gellmann-review", { description: "Run /skill:gellmann-review", handler: (args, ctx) => sendAlias("/skill:gellmann-review", args, ctx) });
   pi.registerCommand("gellmann-help", { description: "Run /skill:gellmann-help", handler: (_args, ctx) => sendAlias("/skill:gellmann-help", "", ctx) });
 

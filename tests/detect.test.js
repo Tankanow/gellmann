@@ -4,28 +4,10 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { execFileSync } = require('child_process');
 
 const { detectMode, hasCodeowners, authorCount } = require('../hooks/gellmann-detect');
 const { getDefaultMode } = require('../hooks/gellmann-config');
-
-function git(cwd, args, env = {}) {
-  return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], env: { ...process.env, GIT_CONFIG_GLOBAL: os.devNull, GIT_CONFIG_SYSTEM: os.devNull, ...env } });
-}
-
-function repo(commitsBy) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'gellmann-detect-'));
-  git(dir, ['init', '-q']);
-  let n = 0;
-  for (const [name, email] of commitsBy) {
-    fs.writeFileSync(path.join(dir, `f${n++}.txt`), 'x');
-    git(dir, ['add', '.']);
-    git(dir, ['-c', `user.name=${name}`, '-c', `user.email=${email}`, 'commit', '-qm', 'c'], {
-      GIT_AUTHOR_NAME: name, GIT_AUTHOR_EMAIL: email, GIT_COMMITTER_NAME: name, GIT_COMMITTER_EMAIL: email,
-    });
-  }
-  return dir;
-}
+const { repo } = require('./helpers/git-fixture');
 
 const cleanup = [];
 process.on('exit', () => { for (const d of cleanup) fs.rmSync(d, { recursive: true, force: true }); });

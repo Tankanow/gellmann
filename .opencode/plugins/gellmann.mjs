@@ -20,7 +20,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // The shared instruction builder is CommonJS; bridge to it from this ES module.
 const require = createRequire(import.meta.url);
 const { getGellmannInstructions } = require('../../hooks/gellmann-instructions');
-const { getDefaultMode, normalizePersistedMode } = require('../../hooks/gellmann-config');
+const { PERSONA_COMMANDS, getDefaultMode, normalizePersistedMode } = require('../../hooks/gellmann-config');
 const { parseCommandFile } = require('./gellmann-frontmatter.cjs');
 
 // OpenCode has no flag-file convention of its own; keep mode beside its config.
@@ -89,7 +89,7 @@ export default async ({ client } = {}) => {
     // synchronous store if same-turn switching ever matters.
     'command.execute.before': async (input) => {
       if (!input) return;
-      const persona = { 'gellmann-work': 'work', 'gellmann-solo': 'solo' }[input.command];
+      const persona = PERSONA_COMMANDS[input.command];
       if (persona) { writeMode(persona); log('info', 'gellmann ' + persona); return; }
       if (input.command !== 'gellmann') return;
       const args = String(input.arguments || '').trim();

@@ -99,7 +99,7 @@ def _filter_skill_body_for_mode(body: str, mode: str) -> str:
             if label_mode and label_mode != effective:
                 continue
 
-        example_label = re.match(r"^-\s*([^:]+):\s*", line)
+        example_label = re.match(r'^-\s*([^:]+):\s*"', line)
         if example_label:
             label_mode = _normalize_runtime_mode(example_label.group(1))
             if label_mode and label_mode != effective:
@@ -152,8 +152,10 @@ def build_injected_context(mode: str | None = None) -> str:
 
 
 def _pre_llm_call(session_id: str = "", **_: Any) -> dict[str, str] | None:
-    mode = _current_mode or _default_mode()
-    context = build_injected_context(mode)
+    global _current_mode
+    if _current_mode is None:
+        _current_mode = _default_mode()
+    context = build_injected_context(_current_mode)
     return {"context": context} if context else None
 
 

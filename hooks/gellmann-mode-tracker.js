@@ -2,7 +2,7 @@
 // gellmann — UserPromptSubmit hook to track which gellmann mode is active
 // Inspects user input for /gellmann commands and writes mode to flag file
 
-const { getDefaultMode, isDeactivationCommand, writeDefaultMode } = require('./gellmann-config');
+const { PERSONA_COMMANDS, RUNTIME_MODES, getDefaultMode, isDeactivationCommand, writeDefaultMode } = require('./gellmann-config');
 const { clearMode, isQoder, readMode, setMode, writeHookOutput } = require('./gellmann-runtime');
 const { getGellmannInstructions } = require('./gellmann-instructions');
 
@@ -30,17 +30,15 @@ function finish() {
 
       if (cmd === '/gellmann-review') {
         mode = 'review';
-      } else if (cmd === '/gellmann-work') {
-        mode = 'work';
-      } else if (cmd === '/gellmann-solo') {
-        mode = 'solo';
+      } else if (PERSONA_COMMANDS[cmd.slice(1)]) {
+        mode = PERSONA_COMMANDS[cmd.slice(1)];
       } else if (cmd === '/gellmann') {
         // `/gellmann default <mode>` persists the default to config (survives
         // restarts). Plain switches stay session-scoped. review is never a
         // valid default, so only off/work/solo are accepted.
         if (arg === 'default') {
           const dmode = parts[2];
-          if (dmode === 'off' || dmode === 'work' || dmode === 'solo') {
+          if (RUNTIME_MODES.includes(dmode)) {
             writeDefaultMode(dmode);
             writeHookOutput('UserPromptSubmit', dmode, 'GELLMANN DEFAULT SET — new sessions start in ' + dmode + '.');
           }
