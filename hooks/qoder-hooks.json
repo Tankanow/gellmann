@@ -1,0 +1,26 @@
+{
+  "_comment": "Reference template — copy the 'hooks' object into your .qoder/settings.json or ~/.qoder/settings.json. Replace GELLMANN_DIR with the path to your gellmann checkout (e.g. ~/.qoder/plugins/gellmann or the npm global install path).",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node GELLMANN_DIR/hooks/gellmann-mode-tracker.js"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "task|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node GELLMANN_DIR/hooks/gellmann-subagent.js"
+          }
+        ]
+      }
+    ]
+  }
+}
