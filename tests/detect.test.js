@@ -10,7 +10,7 @@ const { detectMode, hasCodeowners, authorCount } = require('../hooks/gellmann-de
 const { getDefaultMode } = require('../hooks/gellmann-config');
 
 function git(cwd, args, env = {}) {
-  return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], env: { ...process.env, ...env } });
+  return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], env: { ...process.env, GIT_CONFIG_GLOBAL: os.devNull, GIT_CONFIG_SYSTEM: os.devNull, ...env } });
 }
 
 function repo(commitsBy) {
