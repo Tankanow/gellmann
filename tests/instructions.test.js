@@ -40,7 +40,7 @@ test('filter keeps ordinary rule bullets that start with a mode-like word', () =
 test('instructions carry the header and the load-bearing rules', () => {
   const text = getGellmannInstructions('work');
   assert.match(text, /^GELLMANN MODE ACTIVE — mode: work/);
-  for (const phrase of ['wet streets cause rain', 'Confidence is not proof', 'Never invent a source', 'Uniform hedging']) {
+  for (const phrase of ['wet streets cause rain', 'Confidence is not proof', 'Never invent a source', 'Never invent a person', 'You are not the evidence']) {
     assert.ok(text.includes(phrase), `missing: ${phrase}`);
   }
 });

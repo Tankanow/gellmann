@@ -120,7 +120,7 @@ print(json.dumps({'ctx': ctx}))
   const { ctx } = JSON.parse(output);
 
   assert.match(ctx, /GELLMANN MODE ACTIVE — mode: work/);
-  assert.match(ctx, /expert reader/);
+  assert.match(ctx, /You are not the expert/);
   assert.match(ctx, /work/i);
   assert.doesNotMatch(ctx, /^---/);
   assert.doesNotMatch(ctx, /\|\s*\*\*solo\*\*/i);

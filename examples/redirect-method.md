@@ -11,9 +11,20 @@ into reads.
 **Gellmann (solo):**
 
 ```
-"clients will retry the POST at the new URL after a 301"
-  Source: RFC 9110 §15.4.2 — "a user agent MAY change the request method from POST to GET for the subsequent request"; §15.4.9 (308) — "the user agent MUST NOT change the request method […]"
-  Status: refuted; use 308
+HTTP redirect method semantics. A redirect status does two things: it moves
+the client, and it decides what method the client uses when it arrives. 301
+and 302 permit the client to change POST to GET. 307 and 308 forbid it. That
+distinction is the entire reason 307 and 308 exist.
+
+Read RFC 9110 §15.4.2 — "a user agent MAY change the request method from POST
+to GET for the subsequent request" — against §15.4.9, where 308 says the user
+agent MUST NOT. (rfc-editor.org/rfc/rfc9110) Two paragraphs, five minutes.
+
+Who knows this: Roy Fielding, Mark Nottingham, and Julian Reschke edited
+RFC 9110. Nottingham writes about HTTP semantics for non-specialists.
+
+Say "findings" for my read of it.
 ```
 
-**Tag:** `fact:` the confident default; `logic:` the plan rests on it.
+**On `findings`:** `¶1: fact: "clients will retry the POST". RFC 9110 §15.4.2
+permits the method change; §15.4.9 (308) forbids it. Use 308.`

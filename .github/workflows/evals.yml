@@ -1,0 +1,49 @@
+name: evals
+
+# Behavioral evals cost real money (~$5-8 a full pass) and need a Claude
+# credential, so they do not run on every PR. tests/evals.test.js validates
+# case structure for free in the normal test workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      case:
+        description: 'Case name glob (blank = all)'
+        required: false
+        type: string
+      runs:
+        description: 'Runs per case'
+        required: false
+        default: '3'
+        type: string
+  push:
+    tags: ['v*']
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # work-mode cases search git history for real authors
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Run evals
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          claude plugin eval . \
+            --trust-plugin \
+            --allow-tools Bash \
+            --runs "${{ inputs.runs || '3' }}" \
+            ${{ inputs.case && format('--case {0}', inputs.case) || '' }} \
+            --no-publish \
+            --threshold 0.75 \
+            --report eval-report.html
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-report
+          path: eval-report.html

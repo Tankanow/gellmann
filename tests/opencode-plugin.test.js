@@ -44,7 +44,7 @@ test('system.transform injects the ruleset at the default mode (solo)', async ()
   const system = await transform(hooks);
   assert.equal(system.length, 1);
   assert.match(system[0], /GELLMANN MODE ACTIVE — mode: solo/);
-  assert.match(system[0], /expert reader/);
+  assert.match(system[0], /You are not the expert/);
 });
 
 test('command.execute.before persists /gellmann work, transform follows it', async () => {

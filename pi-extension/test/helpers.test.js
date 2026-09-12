@@ -146,8 +146,10 @@ test("filterSkillBodyForMode keeps rule bullets that contain a colon", () => {
 
   assert.ok(filtered.includes("Confidence is not proof"));
   assert.ok(filtered.includes("Load-bearing negatives"));
-  assert.ok(filtered.includes("The expert's questions are cheap"));
+  // "Never invent a source" carries an inline colon ("citing it: the URL
+  // resolves") and must survive as a rule, not be read as a mode example.
+  assert.ok(filtered.includes("Check the reference before citing it: the URL resolves"));
   // The Modes examples are still filtered down to the active mode.
-  assert.ok(filtered.includes('work: "Verify: SERIALIZABLE prevents the double-insert here'));
-  assert.ok(!filtered.includes('solo: "Verify: SERIALIZABLE prevents the double-insert — PostgreSQL'));
+  assert.ok(filtered.includes('work: "Ask @platform (CODEOWNERS for gateway/)'));
+  assert.ok(!filtered.includes('solo: "Read RFC 9110'));
 });

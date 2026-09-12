@@ -44,13 +44,15 @@ for (const [relPath, normalize] of copies) {
 // Upgrade path: generate the copies from SKILL.md if this ever misses a real drift.
 const INVARIANTS = [
   'wet streets cause rain',                    // the effect, named
-  'Fluency is not footing',                    // step 1
-  'Confidence is not proof',                   // rule 1
-  'Never invent a source',                     // rule 2
+  'You are not the expert',                    // the premise: find the expert, don't be one
+  'fluency is not footing',                    // step 1
+  'You are not the evidence',                  // the rule that blocks a self-anchored finding
+  'Confidence is not proof',                   // rule: memory is not proof
+  'Never invent a source',                     // rule: a citation that won't open
+  'Never invent a person',                     // rule: the same, for humans
   'published critique of a named primary',     // secondary-source rule
-  'mechanism from framing',                    // step 4
-  'Uniform hedging',                           // mark specifically
-  'Verify: <claim>',                           // the ledger line
+  'mechanism from framing',                    // fact about the code vs. the human's call
+  'Say "findings" for my read of it.',         // the artifact's closing offer
   'stop gellmann',                             // the only off switch
 ];
 

@@ -1,9 +1,14 @@
 # Examples
 
 Each example is a real class of AI output that read fine to a non-expert, the
-line an expert would have caught, and the primary source that settles it.
-The point is not that the model is often wrong. It is that when it is wrong in
-a field you do not know, nothing in the prose tells you.
+line an expert would have caught, and the briefing that would have let the
+reader catch it themselves. The point is not that the model is often wrong.
+It is that when it is wrong in a field you do not know, nothing in the prose
+tells you.
+
+Note the shape: gellmann teaches the domain first, then names the humans and
+the source. The verdict on the output comes last and only on request — that
+is the `On findings:` line at the bottom of each example.
 
 | Example | The claim that read fine | What settles it |
 |---|---|---|

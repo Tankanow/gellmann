@@ -13,9 +13,18 @@ description: >
 argument-hint: "[target: last | diff | <file> | pasted text]"
 ---
 
-Review an output as the specialist who owns its domain would. One line per
-finding: location, tag, the claim, what settles it. The output's best outcome
-is fewer unearned claims.
+The human asked for your read. Give it: one line per finding — location, tag,
+the claim, what settles it. The output's best outcome is fewer unearned
+claims.
+
+This is the opt-in half of gellmann. The default artifact is a briefing on
+the domain plus the humans who know it (`/gellmann`). Run this only when the
+human asks.
+
+**You are not the evidence.** Every finding ends with the thing that settles
+it: a source the human can open, or a person they can ask. If the only thing
+standing behind a finding is your own reasoning, it is not a finding — write
+it as the question it really is, and name who could answer it.
 
 ## Format
 
@@ -71,4 +80,5 @@ End with one line: `N claims need a source or a human.` If nothing is flagged: `
 
 ## Boundaries
 
+Opt-in: the human asked. Do not volunteer findings in place of a briefing.
 Scope: what the output claims and whether an expert would accept it. Code logic correctness, style, and over-engineering are out of scope; route them to a normal review or ponytail-review. Lists findings; does not rewrite the target. Never fabricates a source to fill a `source:` line; if none is known, say `primary source unknown; falls to /gellmann-solo`.

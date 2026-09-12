@@ -18,7 +18,9 @@ Michael Crichton, 2002:
 
 He called it the Gell-Mann Amnesia effect. AI output does it to you with higher stakes: in your own field you catch the agent instantly; one field over, the same confident prose reads as true.
 
-Gellmann puts the expert reader inside the agent. Before it presents anything, it reads its own output the way the person who owns that domain would, marks what rests on nothing, and goes to find out: from your teammates and internal record (**work**), or from canonical primary sources (**solo**).
+The cure is not a second opinion from another fluent stranger. The cure is you knowing the subject.
+
+So gellmann does not review the output for you. It briefs you on the domain in a few plain sentences, then puts you in front of someone who actually knows it: your colleagues and the record they left (**work**), or the people who wrote the field down (**solo**).
 
 ## Before / after
 
@@ -27,8 +29,18 @@ You ask for an API migration note. Your agent writes "return 301; clients will r
 With gellmann:
 
 ```
-Verify: clients retry POST after a 301 — RFC 9110 §15.4.2 lets the client change POST to GET; §15.4.9 (308) forbids it. Use 308.
+HTTP redirect method semantics. A redirect status does two things: it moves the
+client, and it decides what method the client uses when it arrives. 301 and 302
+permit the client to change POST to GET. 307 and 308 forbid it. That distinction
+is the entire reason 307 and 308 exist.
+
+Read RFC 9110 §15.4.2 (301) against §15.4.9 (308) — two paragraphs, five minutes.
+Who knows this: Roy Fielding, Mark Nottingham, and Julian Reschke edited it.
+
+Say "findings" for my read of it.
 ```
+
+You now know enough to judge the migration note yourself. That is the point.
 
 More in [examples/](examples/).
 
@@ -37,24 +49,46 @@ More in [examples/](examples/).
 Before presenting any output that makes a claim, the agent runs the reflex:
 
 ```
-1. Name the domain, and your footing in it.   Fluency is not footing.
-2. Mark every load-bearing claim.             proven / sourced / hypothesis / assumption / unknown
-3. Hunt "wet streets cause rain".             reversed causality, version facts stated as timeless, plausible defaults
-4. Separate mechanism from framing.           code does X ≠ X is a bug, the cause, or best practice
-5. Go find out.                               work: who owns this?   solo: where is it written down?
-6. Present with the ledger visible.           Verify: <claim> — <who or what settles it>
+1. Name the domain, specifically.   "Snowflake warehouse billing", not "databases".
+2. Go find out.                     Before forming a view. With the tools it actually has.
+3. Write the briefing.              3-5 plain sentences: the mechanism, and the distinction that decides it.
+4. Name the humans.                 Real people, found this session. Never invented.
+5. Hand it over and stop.           Its read of the output is available on request. It is not the deliverable.
 ```
 
-Nothing is hedged that was directly observed. Nothing is verified that the agent could verify itself with a tool it has. The work ships either way; the ledger rides along.
+The output is a briefing, the humans to ask, the sources to open, and one line
+offering the verdict you did not ask for. Not a wall of analysis you have to
+finish reading before you reach the name.
+
+**You are not the evidence** is the rule that holds it together: if the only
+thing standing behind a sentence is the agent's own reasoning, it does not go
+in. That is what stops gellmann from becoming the confident stranger it exists
+to protect you from.
 
 ### Modes
 
-| Mode | Where the truth lives |
+| Mode | Where the expertise lives |
 |---|---|
-| **work** | With the people and the record. CODEOWNERS, git blame, ADRs, sibling repos, wikis, Slack, Confluence, tickets (read-only, via the host's tools). Ends with who to ask and what to ask. Never posts on your behalf. |
-| **solo** | In canonical primary sources. The spec, the RFC, the official docs for the exact version, the upstream source, the paper. Secondary sources only as published critics of a named primary. Every claim gets a citation you can open or a "could not verify". |
+| **work** | With your colleagues. Searches the work ecosystem for the humans — Slack, GitHub, Jira, Confluence, CODEOWNERS, git log, ADRs — and names who to ask, why them, and the one question to send. Drafts it; never sends it. Nobody internal knows it? Says so, then falls through to outside experts. |
+| **solo** | With the people who wrote it down. The standards editor, the maintainer, the researcher, the author — and the primary source itself: the spec, the RFC, the official docs for the exact version, the upstream source, the paper. Secondary sources only as published critics of a named primary. |
 
 Auto-detected at session start: `work` if the repo has a `CODEOWNERS` file or two or more commit authors, else `solo`. See [docs/where-truth-lives.md](docs/where-truth-lives.md) for what counts as a primary source, by domain.
+
+### The verdict, on request
+
+Gellmann's read of the output is real work and it still exists — it is just
+opt-in. Say `findings` (or run `/gellmann-review`) and you get one line per
+finding: location, tag, the claim, and what settles it. Every finding ends
+with a source you can open or a person you can ask, because the agent is not
+allowed to be its own evidence there either.
+
+### Evals
+
+The behavior above is pinned by an eval suite in [evals/](evals/), run with
+`claude plugin eval`. Each case scores the plugin against a no-plugin
+baseline, so a case only counts if the skill actually changes the answer. The
+two cases that matter most reproduce the failure that motivated the briefing
+contract: an agent confidently judging a domain it had no way to reach.
 
 ## Install
 
