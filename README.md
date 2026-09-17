@@ -292,13 +292,77 @@ Commands need a skill-capable host. Instruction-only adapters (Cursor, Windsurf,
 ## Development
 
 ```bash
-node scripts/check-rule-copies.js   # instruction-tier copies match AGENTS.md; invariants present
-node scripts/check-versions.js      # all eight manifests share one version
 npm install --prefix gellmann-mcp
-npm test
+npm test            # 118 tests across the repo, pi-extension, and the MCP server
+npm run check       # rule copies match AGENTS.md; all ten manifests share one version
+npm run build       # regenerate .openclaw/skills/ from skills/
 ```
 
-`.openclaw/skills/` is generated from `skills/`; rerun `node scripts/build-openclaw-skills.js` after changing a skill. Releases: bump the version in all eight files, tag `vX.Y.Z`, push the tag; CI creates the GitHub Release.
+`.openclaw/skills/` is generated from `skills/`; rerun `npm run build` after
+changing a skill. Behavioral evals live in [evals/](evals/) and cost money to
+run — see that README.
+
+### Versioning
+
+Two forms, one base:
+
+| Form | Example | What it is |
+|---|---|---|
+| release | `0.2.0` | what a `vX.Y.Z` tag ships |
+| dev | `0.2.0-20260917T131133Z` | every install-worthy change on a branch |
+
+```bash
+npm run bump                    # dev stamp on the current base
+npm run bump -- --release       # drop the stamp, ready to tag
+npm run bump -- 0.3.0           # set a new base, release form
+npm run bump -- 0.3.0 --dev     # set a new base, fresh dev stamp
+npm run bump -- --print         # show the current version
+```
+
+The version is declared in **ten** files across six host ecosystems;
+`scripts/bump-version.js` stamps all of them at once and
+`scripts/check-versions.js` fails the build if they disagree. A test asserts
+that no version-bearing file in the repo sits outside that list, so adding a
+host manifest can't silently drift.
+
+**Why the dev stamp exists.** Claude Code keys its plugin install cache on the
+version *string*. With the version unchanged, `claude plugin update` prints
+`already at the latest version` and keeps serving the old files — so a
+directory-sourced plugin under active development looks updated and isn't. The
+only symptom is the agent behaving like the previous build. Moving the string
+forces a fresh copy. (Verified 2026-09-14: the CLI compares version strings for
+inequality, not semver precedence — it will even "update" from `0.2.0` to
+`0.2.0-<stamp>`, which real semver ranks as a downgrade.)
+
+The stamp is ISO 8601 **basic** format, UTC, second precision — deliberately no
+colons. Colons are legal in a semver prerelease and the CLI accepts them, but it
+silently sanitizes them to hyphens in the cache path, so two versions differing
+only in `:` vs `-` collide on one directory; they are also illegal in Windows
+filenames, and gellmann ships a PowerShell statusline.
+
+Local install loop:
+
+```bash
+npm run bump                                      # new stamp
+claude plugin marketplace update gellmann
+claude plugin update gellmann@gellmann            # now actually picks it up
+```
+
+Each install is a full copy of the repo (~24MB, mostly `gellmann-mcp/node_modules`)
+and old versions are **not** pruned, so `~/.claude/plugins/cache/gellmann/` grows
+one directory per stamp. Delete stale ones when it gets noisy.
+
+### Releases
+
+```bash
+npm run bump -- --release     # or -- 0.3.0 for a new base
+npm run check                 # confirms the release form
+git tag v0.2.0 && git push --tags
+```
+
+CI re-runs the guard with the tag in the environment, which additionally
+requires the bare `X.Y.Z` form and an exact match to the tag — a dev stamp
+cannot be released by accident — then creates the GitHub Release.
 
 ## FAQ
 

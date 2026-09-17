@@ -1,6 +1,6 @@
 {
   "name": "gellmann-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0-20260917T131133Z",
   "description": "MCP server that serves Gellmann's expert-reader instructions as a prompt and a tool.",
   "private": true,
   "type": "module",

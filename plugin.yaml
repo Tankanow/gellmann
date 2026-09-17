@@ -1,5 +1,5 @@
 name: gellmann
-version: 0.1.0
+version: 0.2.0-20260917T131133Z
 description: The expert reader for Hermes Agent, always-on context, bundled skills, and slash commands.
 author: Adam Tankanow
 provides_hooks:

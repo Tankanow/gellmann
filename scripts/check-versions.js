@@ -1,48 +1,33 @@
 #!/usr/bin/env node
-// Version-consistency guard. Gellmann declares its version in eight files across
-// five host ecosystems, and every release bumps all of them by hand.
+// Version-consistency guard. Gellmann declares its version in ten files across
+// six host ecosystems, and every bump moves all of them together.
 //
-// tests/gemini-extension.test.js already checks the four plugin manifests agree
-// with each other, but that can't catch every manifest staying stale together
-// while a release moves on — they'd "agree" and the test would pass. It also
-// ignores the two package.json files. This check closes both gaps:
-//   1. every version-bearing file must share one pinned X.Y.Z version, and
-//   2. on a release-tag CI run, that shared version must equal the tag.
+// tests/gemini-extension.test.js already checks the plugin manifests agree with
+// each other, but that can't catch every manifest staying stale together while
+// a release moves on — they'd "agree" and the test would pass. It also ignores
+// the package.json files, plugin.yaml, and the MCP lockfile. This check closes
+// those gaps:
+//   1. every version-bearing file must share one version,
+//   2. that version must be X.Y.Z or X.Y.Z-YYYYMMDDTHHMMSSZ, and
+//   3. on a release-tag CI run it must be the bare X.Y.Z form, equal to the tag.
+//
+// Rule 3 is the strict one: a dev stamp is fine on a branch and forbidden on a
+// release. See scripts/version-files.js for the scheme and why it exists.
 
-const fs = require('fs');
-const path = require('path');
-
-const root = path.join(__dirname, '..');
-const PINNED_SEMVER = /^\d+\.\d+\.\d+$/;
-
-// Every file that declares the project version, and who reads it. Add new host
-// manifests here so a future ecosystem can't drift unnoticed.
-const VERSION_FILES = [
-  '.claude-plugin/plugin.json',  // Claude Code plugin — what users install
-  '.codex-plugin/plugin.json',   // Codex plugin
-  '.devin-plugin/plugin.json',   // Devin CLI plugin
-  '.github/plugin/plugin.json',  // Copilot plugin
-  '.qoder-plugin/plugin.json',   // Qoder plugin
-  'gemini-extension.json',       // Gemini CLI extension
-  'package.json',                // pi-package / repo root
-  'gellmann-mcp/package.json',   // MCP server (private, internal-only)
-];
-
-function readVersion(relPath) {
-  try {
-    // Strip a UTF-8 BOM some Windows editors prepend (breaks JSON.parse).
-    const raw = fs.readFileSync(path.join(root, relPath), 'utf8').replace(/^\uFEFF/, '');
-    return JSON.parse(raw).version;
-  } catch (e) {
-    throw new Error(`${relPath}: ${e.message}`);
-  }
-}
+const {
+  ALL_FILES, RELEASE_SEMVER, DEV_STAMP, readVersion, parseVersion,
+} = require('./version-files');
 
 let failed = false;
-const versions = VERSION_FILES.map((relPath) => {
+
+const versions = ALL_FILES.map((relPath) => {
   const version = readVersion(relPath);
-  if (typeof version !== 'string' || !PINNED_SEMVER.test(version)) {
-    console.error(`${relPath}: version must be a pinned X.Y.Z semver, got ${JSON.stringify(version)}`);
+  const parsed = typeof version === 'string' ? parseVersion(version) : null;
+  if (!parsed) {
+    console.error(`${relPath}: version must be X.Y.Z or X.Y.Z-<stamp>, got ${JSON.stringify(version)}`);
+    failed = true;
+  } else if (parsed.prerelease && !DEV_STAMP.test(parsed.prerelease)) {
+    console.error(`${relPath}: prerelease must be a UTC stamp YYYYMMDDTHHMMSSZ, got ${JSON.stringify(parsed.prerelease)}`);
     failed = true;
   }
   return [relPath, version];
@@ -53,17 +38,21 @@ const distinct = [...new Set(versions.map(([, v]) => v))];
 if (distinct.length > 1) {
   console.error('Version mismatch — every manifest must share one version:');
   for (const [relPath, version] of versions) console.error(`  ${version}\t${relPath}`);
+  console.error('Run: node scripts/bump-version.js <X.Y.Z> [--dev]');
   failed = true;
 }
 const shared = distinct.length === 1 ? distinct[0] : null;
 
 // On a release-tag push CI sets GITHUB_REF_TYPE=tag and GITHUB_REF_NAME=vX.Y.Z.
-// The shared version must equal the tag — this catches tagging a release whose
-// version files were never bumped, which mutual agreement alone cannot.
+// A tagged release must be a release version — no dev stamp — and must match
+// the tag. Mutual agreement alone catches neither.
 if (shared && process.env.GITHUB_REF_TYPE === 'tag') {
   const tag = process.env.GITHUB_REF_NAME || '';
   const tagVersion = tag.replace(/^v/, '');
-  if (PINNED_SEMVER.test(tagVersion) && tagVersion !== shared) {
+  if (!RELEASE_SEMVER.test(shared)) {
+    console.error(`release tag ${tag} but version is ${shared}; run: node scripts/bump-version.js --release`);
+    failed = true;
+  } else if (RELEASE_SEMVER.test(tagVersion) && tagVersion !== shared) {
     console.error(`release tag ${tag} does not match version ${shared}; bump the version files before tagging`);
     failed = true;
   }
@@ -74,4 +63,5 @@ if (failed) {
   process.exit(1);
 }
 
-console.log(`All ${VERSION_FILES.length} version files pinned at ${shared}.`);
+const kind = RELEASE_SEMVER.test(shared) ? 'release' : 'dev';
+console.log(`All ${ALL_FILES.length} version files pinned at ${shared} (${kind}).`);

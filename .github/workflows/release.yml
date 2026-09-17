@@ -22,7 +22,10 @@ jobs:
         run: npm install --prefix gellmann-mcp
       - name: Run tests
         run: npm test
-      # The tag must equal the version every manifest declares.
+      # On a tag push Actions sets GITHUB_REF_TYPE/GITHUB_REF_NAME, which turns on
+      # the guard's strict half: every manifest must share one version, that
+      # version must be the bare X.Y.Z release form (no dev stamp), and it must
+      # equal the tag. Run `node scripts/bump-version.js --release` before tagging.
       - run: node scripts/check-versions.js
       - run: gh release create "$GITHUB_REF_NAME" --generate-notes --verify-tag
         env:

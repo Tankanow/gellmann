@@ -15,7 +15,10 @@ const root = path.join(__dirname, '..');
 const MANIFEST = 'gemini-extension.json';
 const EXTENSION_NAME = 'gellmann';
 // Floating refs are a supply-chain footgun; the manifest version must be pinned.
-const PINNED_SEMVER = /^\d+\.\d+\.\d+$/;
+// A dev stamp (X.Y.Z-YYYYMMDDTHHMMSSZ) is still pinned -- it names one exact
+// build -- so it passes here. scripts/check-versions.js is what forbids a
+// stamp on a release tag. See scripts/version-files.js for the scheme.
+const PINNED_SEMVER = /^\d+\.\d+\.\d+(?:-\d{8}T\d{6}Z)?$/;
 const VERSIONED_MANIFESTS = [
   'gemini-extension.json',
   '.claude-plugin/plugin.json',
