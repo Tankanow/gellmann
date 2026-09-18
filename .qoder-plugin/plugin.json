@@ -1,0 +1,16 @@
+{
+  "name": "gellmann",
+  "version": "0.2.0-20260917T131133Z",
+  "description": "The expert reader for AI agents. Counters the Gell-Mann Amnesia effect: reads every output as a domain expert would, then verifies with the team (work) or with primary sources (solo).",
+  "author": {
+    "name": "Adam Tankanow",
+    "url": "https://github.com/tankanow"
+  },
+  "homepage": "https://github.com/tankanow/gellmann",
+  "repository": "https://github.com/tankanow/gellmann",
+  "license": "MIT",
+  "keywords": ["verification", "fact-checking", "sources", "code-review", "gell-mann-amnesia"],
+  "skills": "./skills/",
+  "rules": "./.qoder/rules/",
+  "hooks": "./hooks/qoder-hooks.json"
+}

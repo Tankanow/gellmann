@@ -1,0 +1,20 @@
+{
+  "name": "gellmann",
+  "description": "Reads AI output as a domain expert would. Verifies with your team or with primary sources.",
+  "owner": {
+    "name": "Adam Tankanow",
+    "url": "https://github.com/tankanow"
+  },
+  "plugins": [
+    {
+      "name": "gellmann",
+      "description": "Reads AI output as a domain expert would. Verifies with your team or with primary sources.",
+      "source": "./",
+      "category": "productivity",
+      "tags": ["verification", "fact-checking", "sources", "code-review", "gell-mann-amnesia"],
+      "commands": "commands/",
+      "skills": "skills/",
+      "hooks": "hooks/copilot-hooks.json"
+    }
+  ]
+}

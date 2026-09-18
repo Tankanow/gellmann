@@ -1,0 +1,21 @@
+{
+  "name": "gellmann",
+  "interface": {
+    "displayName": "Gellmann"
+  },
+  "plugins": [
+    {
+      "name": "gellmann",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/tankanow/gellmann.git",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "gellmann",
+  "version": "0.2.0-20260917T131133Z",
+  "description": "The expert reader for AI agents. Counters the Gell-Mann Amnesia effect: reads every output as a domain expert would, then verifies with the team (work) or with primary sources (solo).",
+  "author": { "name": "Adam Tankanow", "url": "https://github.com/tankanow" },
+  "hooks": "./hooks/claude-codex-hooks.json"
+}

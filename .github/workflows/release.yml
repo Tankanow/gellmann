@@ -1,0 +1,32 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install MCP deps
+        run: npm install --prefix gellmann-mcp
+      - name: Run tests
+        run: npm test
+      # On a tag push Actions sets GITHUB_REF_TYPE/GITHUB_REF_NAME, which turns on
+      # the guard's strict half: every manifest must share one version, that
+      # version must be the bare X.Y.Z release form (no dev stamp), and it must
+      # equal the tag. Run `node scripts/bump-version.js --release` before tagging.
+      - run: node scripts/check-versions.js
+      - run: gh release create "$GITHUB_REF_NAME" --generate-notes --verify-tag
+        env:
+          GH_TOKEN: ${{ github.token }}

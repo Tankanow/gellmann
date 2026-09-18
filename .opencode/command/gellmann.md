@@ -1,0 +1,5 @@
+---
+description: Switch gellmann mode (work/solo/off) or report the current one
+---
+
+Switch to gellmann $ARGUMENTS mode. If no mode is given, report the current mode. Then invoke the gellmann skill and follow it. You are not the expert; you are the one who finds the expert. Do not review the output. Name the domain specifically, GO FIND OUT with the tools you actually have before forming any view (work: invoke the gellmann-work skill to search Slack, GitHub, Jira, Confluence, CODEOWNERS and git log for the humans; solo: invoke the gellmann-solo skill to find the primary source and the human who wrote it), then hand the human a briefing: three to five short declarative sentences on the domain (the mechanism, and the distinction that decides the question), the named humans to ask with the one question to send, and the openable sources with what reading each buys. Close with: Say "findings" for my read of it. You are not the evidence: if the only thing standing behind a sentence is your own reasoning, it does not go in. Never invent a person. Never invent a source. Confidence is not proof.

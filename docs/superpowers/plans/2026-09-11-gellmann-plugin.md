@@ -261,7 +261,7 @@ test('filter keeps only the active mode row and example', () => {
 });
 
 test('filter keeps ordinary rule bullets that start with a mode-like word', () => {
-  const body = '---\nname: x\n---\n- Work: this is a rule, not an example\n- solo: "an example"\n';
+  const body = '---\nname: x\n---\n- Work: this is a rule, keep it verbatim\n- solo: "an example"\n';
   const out = filterSkillBodyForMode(body, 'work');
   assert.match(out, /Work: this is a rule/);
   assert.doesNotMatch(out, /an example/);
@@ -397,8 +397,10 @@ const { execFileSync } = require('child_process');
 const { detectMode, hasCodeowners, authorCount } = require('../hooks/gellmann-detect');
 const { getDefaultMode } = require('../hooks/gellmann-config');
 
+// GIT_CONFIG_GLOBAL/SYSTEM → devNull: the developer's commit.gpgsign or hooks
+// template must not reach these throwaway repos.
 function git(cwd, args, env = {}) {
-  return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], env: { ...process.env, ...env } });
+  return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], env: { ...process.env, GIT_CONFIG_GLOBAL: os.devNull, GIT_CONFIG_SYSTEM: os.devNull, ...env } });
 }
 
 function repo(commitsBy) {
@@ -561,7 +563,7 @@ git commit -m "feat: auto-detect work vs solo from CODEOWNERS and author count"
   const { execFileSync } = require('child_process');
   const repoDir = path.join(temp, 'team-repo');
   fs.mkdirSync(repoDir, { recursive: true });
-  const g = (args, env = {}) => execFileSync('git', args, { cwd: repoDir, stdio: 'ignore', env: { ...process.env, ...env } });
+  const g = (args, env = {}) => execFileSync('git', args, { cwd: repoDir, stdio: 'ignore', env: { ...process.env, GIT_CONFIG_GLOBAL: os.devNull, GIT_CONFIG_SYSTEM: os.devNull, ...env } });
   g(['init', '-q']);
   for (const [n, e] of [['A', 'a@x.io'], ['B', 'b@x.io']]) {
     fs.writeFileSync(path.join(repoDir, n + '.txt'), n);
@@ -1124,19 +1126,18 @@ git commit -m "feat: instruction-tier rule copies with drift check"
 - Create: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.codex-plugin/plugin.json`, `.devin-plugin/plugin.json`, `.qoder-plugin/plugin.json`, `.github/plugin/plugin.json`, `.github/plugin/marketplace.json`, `.grok-plugin/marketplace.json`, `.agents/plugins/marketplace.json`, `plugin.json`, `gemini-extension.json`, `opencode.json`
 - Create: `gellmann-mcp/package.json` (version-bearing; the server lands in Task 11)
 - Port: `$PONY/scripts/check-versions.js` → `scripts/check-versions.js`
-- Port tests: `$PONY/tests/gemini-extension.test.js`, `copilot-plugin.test.js`, `grok-plugin.test.js`, `qoder-plugin.test.js`, `package.test.js` → same names under `tests/`
+- Port tests: `$PONY/tests/gemini-extension.test.js`, `copilot-plugin.test.js`, `grok-plugin.test.js`, `qoder-plugin.test.js` → same names under `tests/` (`package.test.js` moves to Task 13, where `scripts/uninstall.js` lands)
 
 - [ ] **Step 1: Port the tests and the version check**
 
-`port` each of the five test files and `scripts/check-versions.js`. Edits:
+`port` each of the four test files and `scripts/check-versions.js`. Edits:
 - `tests/gemini-extension.test.js`: `REUSED_COMMANDS = ['commands/gellmann.toml', 'commands/gellmann-review.toml']`; `RULE_INVARIANTS = ['expert reader', 'Confidence is not proof', 'wet streets cause rain']`.
-- `tests/package.test.js`: also assert `pkg.private === true` with the message "no npm publish; GitHub-only distribution".
 - Read each of `copilot-plugin`, `grok-plugin`, `qoder-plugin` after porting and fix any expectation that names a ponytail-only skill (`ponytail-audit`, `-debt`, `-gain`) to the five gellmann skills.
 - `scripts/check-versions.js`: `VERSION_FILES` lists the eight files from Global Constraints with `gellmann-mcp/package.json`; update the header comment (drop the `#260/#262` history, keep the two-gap explanation).
 
 - [ ] **Step 2: Run to verify failure**
 
-Run: `node --test tests/gemini-extension.test.js tests/copilot-plugin.test.js tests/grok-plugin.test.js tests/qoder-plugin.test.js tests/package.test.js && node scripts/check-versions.js`
+Run: `node --test tests/gemini-extension.test.js tests/copilot-plugin.test.js tests/grok-plugin.test.js tests/qoder-plugin.test.js && node scripts/check-versions.js`
 Expected: FAIL, manifests missing.
 
 - [ ] **Step 3: Write the manifests**
@@ -1197,7 +1198,7 @@ Shared keywords: `["verification", "fact-checking", "sources", "code-review", "g
 
 - [ ] **Step 4: Run the tests**
 
-Run: `node --test tests/gemini-extension.test.js tests/copilot-plugin.test.js tests/grok-plugin.test.js tests/qoder-plugin.test.js tests/package.test.js && node scripts/check-versions.js`
+Run: `node --test tests/gemini-extension.test.js tests/copilot-plugin.test.js tests/grok-plugin.test.js tests/qoder-plugin.test.js && node scripts/check-versions.js`
 Expected: PASS; `All 8 version files pinned at 0.1.0.`
 
 - [ ] **Step 5: Commit**
@@ -1498,10 +1499,11 @@ git commit -m "feat: generated OpenClaw skill package"
 **Files:**
 - Port: `$PONY/scripts/uninstall.js` → `scripts/uninstall.js`
 - Port: `$PONY/tests/uninstall.test.js` → `tests/uninstall.test.js`
+- Port: `$PONY/tests/package.test.js` → `tests/package.test.js`, adding an assertion `pkg.private === true` with the message "no npm publish; GitHub-only distribution"
 
-- [ ] **Step 1: Port test, run to verify failure**
+- [ ] **Step 1: Port tests, run to verify failure**
 
-`port tests/uninstall.test.js tests/uninstall.test.js`. Run `node --test tests/uninstall.test.js` → FAIL.
+`port tests/uninstall.test.js tests/uninstall.test.js` and `port tests/package.test.js tests/package.test.js` (add the `private` assertion). Run `node --test tests/uninstall.test.js tests/package.test.js` → FAIL (uninstall.js missing).
 
 - [ ] **Step 2: Port the script**
 
@@ -1515,7 +1517,7 @@ Expected: PASS across `tests/`, `pi-extension`, `gellmann-mcp`.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add scripts/uninstall.js tests/uninstall.test.js
+git add scripts/uninstall.js tests/uninstall.test.js tests/package.test.js
 git commit -m "feat: uninstall script for state outside the plugin"
 ```
 
